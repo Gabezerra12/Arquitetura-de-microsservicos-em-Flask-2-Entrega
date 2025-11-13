@@ -189,7 +189,34 @@ def atualizar(aid):
     a = atualizar_atividade(aid, data)
     if not a: return jsonify({'error':'Atividade não encontrada'}),404
     return jsonify(a.to_dict()),200
+@bp.route('/atividades/<int:aid>', methods=['DELETE'])
+def deletar(aid):
+    """Excluir uma atividade pelo ID
+    ---
+    parameters:
+      - name: aid
+        in: path
+        type: integer
+        required: true
+        description: ID da atividade
+    responses:
+      200:
+        description: Atividade excluída com sucesso
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: Atividade excluída com sucesso
+      404:
+        description: Atividade não encontrada
+    """
+    a = get_atividade_by_id(aid)
+    if not a:
+        return jsonify({'error': 'Atividade não encontrada'}), 404
 
+    deletar_atividade(aid)
+    return jsonify({'message': 'Atividade excluída com sucesso'}), 200
 @bp.route('/notas', methods=['GET'])
 def listar_notas_route():
     """Lista todas as notas cadastradas
